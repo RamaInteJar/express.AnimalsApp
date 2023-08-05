@@ -22,7 +22,6 @@ mongoose.connection
   .on("close", () => console.log("Disconnected from MongoDB"))
   .on("error", (error) => console.log(error));
 
-
 // Our Models
 ////////////////////////////////////////////////
 // pull schema and model from mongoose
@@ -41,7 +40,7 @@ const Animal = model("Animal", animalsOfAfricaSchema);
 // Middleware
 /////////////////////////////////////////////////////
 const app = express();
-app.set('view engine', 'ejs')
+app.set("view engine", "ejs");
 app.use(morgan("tiny")); //logging
 app.use(methodOverride("_method")); // override for put and delete requests from forms
 app.use(express.urlencoded({ extended: true })); // parse urlencoded request bodies
@@ -51,8 +50,8 @@ app.get("/", (req, res) => {
   res.send("Hello from the server side!!");
 });
 
-//Seed Route: this route will delete everything in our database related to animals 
-//and re-seed with some starter data 
+//Seed Route: this route will delete everything in our database related to animals
+//and re-seed with some starter data
 app.get("/animals/seed", async (req, res) => {
   const animalsOfAfrica = [
     {
@@ -60,35 +59,35 @@ app.get("/animals/seed", async (req, res) => {
       extinct: false,
       location: "Sub-Saharan Africa",
       lifeExpectancy: 60,
-      image: ""
+      image: "",
     },
     {
       species: "Lion",
       extinct: false,
       location: "Various regions in Africa",
       lifeExpectancy: 10,
-      image: ""
+      image: "",
     },
     {
       species: "Giraffe",
       extinct: false,
       location: "Savannas of Africa",
       lifeExpectancy: 25,
-      image: "https://images.unsplash.com/photo-1486688680290-be46662593bd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+      image:""
     },
     {
       species: "Cheetah",
       extinct: false,
       location: "Various regions in Africa",
       lifeExpectancy: 12,
-      image: ""
+      image: "",
     },
     {
       species: "African Buffalo",
       extinct: false,
       location: "Sub-Saharan Africa",
       lifeExpectancy: 25,
-      image: ""
+      image: "",
     },
   ];
 
@@ -97,20 +96,34 @@ app.get("/animals/seed", async (req, res) => {
   res.json(createdAnimals);
 });
 
-app.get('/animals', async(req, res)=>{
+app.get("/animals", async (req, res) => {
   const animals = await Animal.find();
-  res.render('animals/index.ejs', {animals}) 
-})
+  res.render("animals/index.ejs", { animals });
+});
 
-app.get('/animals/new', (req, res)=>{
-  res.render('animals/new.ejs')
-})
+app.get("/animals/new", (req, res) => {
+  res.render("animals/new.ejs");
+});
 
 //show Route:Display the full content of the animal with the specified ID
-app.get("/animals/:id", async(req, res)=>{
-  const id = req.params.id
+app.get("/animals/:id", async (req, res) => {
+  const id = req.params.id;
+  const animal = await Animal.findById(id);
+  res.render("animals/show.ejs", { animal });
+});
+
+//update route/create route
+app.post("/animals", async (req, res) => {
+  req.body.extinct = req.body.extinct === "on" ? true : false;
+  await Animal.create(req.body);
+  res.redirect("/animals");
+});
+
+//Edit route
+app.get("/animals/:id/edit", async(req, res)=>{
+  const id = req.params.id 
   const animal = await Animal.findById(id)
-  res.render("animals/show.ejs", {animal})
+res.render("animals/edit.ejs", {animal})
 })
 
 const PORT = process.env.PORT || 3000;

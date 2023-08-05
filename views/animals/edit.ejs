@@ -6,23 +6,31 @@
     <%- include("../partials/header.ejs") %>
     <main>
       <div>
-        <form action="/animals" method="post">
+        <form action="/animals" method="PUT">
           <fieldset>
-            <legend>Create new animal</legend>
+            <legend>Edit the species</legend>
             <label>
               species:<input
                 type="text"
                 name="name"
+                value="<%= animal.species %>"
                 placeholder="enter species name"
               />
             </label>
 
-            <label> extinct:<input type="checkbox" name="readyToEat" /> </label>
+            <label>
+              extinct:<input
+                type="checkbox"
+                name="extinct"
+                value="<%= animal.extinct %>"
+              />
+            </label>
 
             <label>
               location:<input
                 type="text"
                 name="name"
+                value="<%= animal.location %>"
                 placeholder="enter species location"
               />
             </label>
@@ -30,6 +38,7 @@
               lifeExpectancy:<input
                 type="number"
                 name="name"
+                value="<%= animal.lifeExpectancy %>"
                 placeholder="enter species life expectancy"
               />
             </label>
