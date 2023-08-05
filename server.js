@@ -102,6 +102,10 @@ app.get('/animals', async(req, res)=>{
   res.render('animals/index.ejs', {animals}) 
 })
 
+app.get('/animals/new', (req, res)=>{
+  res.render('animals/new.ejs')
+})
+
 //show Route:Display the full content of the animal with the specified ID
 app.get("/animals/:id", async(req, res)=>{
   const id = req.params.id
