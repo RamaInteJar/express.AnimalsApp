@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../partials/head.ejs") %>
+
+  <body>
+    <%- include("../partials/header.ejs") %>
+    <main>
+      <div>
+        <% for (animal of animals) { %>
+
+        <article>
+          <a href="/animals/<%= animal._id %>">
+            <h2>
+              <%= animal.species %> - <%= animal.extinct ? "extinct" : "notExtinct" %>
+            </h2>
+          </a>
+          <hr>
+        </article>
+
+        <% } %>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../partials/head.ejs") %>
+
+  <body>
+    <%- include("../partials/header.ejs") %>
+    <main>
+      <div>
+        <article>
+          <div>
+            <h2><%= animal.species %></h2>
+            <img src="<%= animal.image %>" alt="animal" />
+          </div>
+          <a href="/animals/<%= animal._id %>/edit">
+            <button>Edit</button>
+          </a>
+          <form action="/animals/<%= animal._id %>?_method=DELETE" method="POST"> <!-- Move the closing tag of the form here -->
+            <input type="submit" value="Delete" />
+          </form>
+          <a href="/animals/">
+            <button>Back to Main</button>
+          </a>
+        </article>
+      </div>
+    </main>
+  </body>
+</html>
+
