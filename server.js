@@ -32,6 +32,7 @@ const animalsOfAfricaSchema = new Schema({
   extinct: Boolean,
   location: String,
   lifeExpectancy: Number,
+  image: String, // Add an 'image' field to the schema
 });
 
 const Animal = model("Animal", animalsOfAfricaSchema);
@@ -46,49 +47,15 @@ app.use(methodOverride("_method")); // override for put and delete requests from
 app.use(express.urlencoded({ extended: true })); // parse urlencoded request bodies
 app.use(express.static("public")); // serve files from public statically
 
+// Hello Route
 app.get("/", (req, res) => {
   res.send("Hello from the server side!!");
 });
 
-//Seed Route: this route will delete everything in our database related to animals
-//and re-seed with some starter data
+// Seed Route: Delete existing data and reseed with starter data
 app.get("/animals/seed", async (req, res) => {
   const animalsOfAfrica = [
-    {
-      species: "African Elephant",
-      extinct: false,
-      location: "Sub-Saharan Africa",
-      lifeExpectancy: 60,
-      image: "",
-    },
-    {
-      species: "Lion",
-      extinct: false,
-      location: "Various regions in Africa",
-      lifeExpectancy: 10,
-      image: "",
-    },
-    {
-      species: "Giraffe",
-      extinct: false,
-      location: "Savannas of Africa",
-      lifeExpectancy: 25,
-      image:""
-    },
-    {
-      species: "Cheetah",
-      extinct: false,
-      location: "Various regions in Africa",
-      lifeExpectancy: 12,
-      image: "",
-    },
-    {
-      species: "African Buffalo",
-      extinct: false,
-      location: "Sub-Saharan Africa",
-      lifeExpectancy: 25,
-      image: "",
-    },
+    // ... (Array of starter animal data)
   ];
 
   await Animal.deleteMany({});
@@ -96,38 +63,48 @@ app.get("/animals/seed", async (req, res) => {
   res.json(createdAnimals);
 });
 
+// Index Route: Display a list of all animals
 app.get("/animals", async (req, res) => {
   const animals = await Animal.find();
   res.render("animals/index.ejs", { animals });
 });
 
+// New Route: Render form to add a new animal
 app.get("/animals/new", (req, res) => {
   res.render("animals/new.ejs");
 });
 
-//show Route:Display the full content of the animal with the specified ID
+// Delete Route: Delete a specific animal by its ID
+app.delete("/animals/:index", async (req, res) => {
+  const idToDelete = req.params.index;
+  await Animal.findByIdAndDelete(idToDelete);
+  res.redirect("/animals");
+});
+
+// Show Route: Display details of a specific animal by its ID
 app.get("/animals/:id", async (req, res) => {
   const id = req.params.id;
   const animal = await Animal.findById(id);
   res.render("animals/show.ejs", { animal });
 });
 
-//update route/create route
+// Create Route: Add a new animal to the database
 app.post("/animals", async (req, res) => {
   req.body.extinct = req.body.extinct === "on" ? true : false;
   await Animal.create(req.body);
   res.redirect("/animals");
 });
 
-//Edit route
-app.get("/animals/:id/edit", async(req, res)=>{
-  const id = req.params.id 
-  const animal = await Animal.findById(id)
-res.render("animals/edit.ejs", {animal})
-})
+// Edit Route: Render form to edit an existing animal
+app.get("/animals/:id/edit", async (req, res) => {
+  const id = req.params.id;
+  const animal = await Animal.findById(id);
+  res.render("animals/edit.ejs", { animal });
+});
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3300;
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Hello from the server side ${PORT}`);
 });
